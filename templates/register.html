@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - IdleMinds</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        h2 { color: #333; margin-top: 0; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn { width: 100%; background: #2b6c92; color: white; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn:hover { background: #1e4d68; }
+        .alert { background: #ffdddd; color: #d8000c; padding: 10px; border-radius: 5px; margin-bottom: 15px; font-size: 14px; }
+        .link { margin: 15px; display: block; font-size: 14px; color: #555; }
+        .link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Create Account</h2>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="/register" method="POST">
+            <input type="text" name="username" placeholder="Choose a Username" required>
+            <input type="password" name="password" placeholder="Create a Password" required>
+            <button type="submit" class="btn">Register</button>
+        </form>
+        
+        <span class="link">Already have an account? <a href="/login">Login here</a></span>
+    </div>
+</body>
+</html>

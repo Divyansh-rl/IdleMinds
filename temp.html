@@ -1,0 +1,62 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Idle Minds</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f9; text-align: center; padding: 0; margin: 0; }
+        
+        /* New Top Navigation Bar for User Info */
+        .top-nav { background-color: #333; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .top-nav a { color: #ff6b6b; text-decoration: none; font-weight: bold; }
+        .top-nav a:hover { text-decoration: underline; }
+        
+        .content { padding: 50px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; width: 300px; margin: 15px; }
+        .btn { display: inline-block; background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <!-- The User Bar -->
+    <div class="top-nav">
+        <span>Logged in as: <strong>{{ username }}</strong></span>
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="content">
+        <h1>🎮 Welcome to the Hub, {{ username }}!</h1>
+        <p>Select a game below to start playing.</p>
+
+    <div class="card">
+        <h2>Sudoku</h2>
+        <p>Test your logic with dynamically generated puzzles!</p>
+        <a href="/play/sudoku" class="btn">Play Now</a>
+    </div>
+
+    <div class="card">
+        <h2>Pips</h2>
+        <p>Pick, place, and match blocks to solve tricky mathematical puzzles!</p>
+        <a href="/play/pips" class="btn">Play Now</a>
+    </div>
+
+    <div class="card">
+        <h2>Zips</h2>
+        <p>Trace the correct path to connect the numbers without leaving any spaces!</p>
+        <a href="/play/zips" class="btn">Play Now</a>
+    </div>
+
+    <div class="card">
+        <h2>Wordcraft</h2>
+        <p>Guess the hidden 5-letter word using color-coded clues!</p>
+        <a href="/play/wordcraft" class="btn">Play Now</a>
+    </div>
+
+    <div class="card">
+        <h2>Connections</h2>
+        <p>Sort the scattered board by matching items that share a common theme!</p>
+        <a href="/play/connections" class="btn">Play Now</a>
+    </div>
+    </div>
+</body>
+</html>
