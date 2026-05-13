@@ -41,9 +41,7 @@ def register():
 
 @app.route('/')
 def home():
-    if 'username' not in session:
-        return redirect(url_for('login'))
-        
+    if 'username' not in session: return redirect(url_for('login'))
     user = users_collection.find_one({'username': session['username']})
     
     level = user.get('level', 1)
@@ -51,9 +49,21 @@ def home():
     xp_needed = get_xp_needed(level)
     progress = int((xp / xp_needed) * 100)
 
-    return render_template('hub.html', username=user['username'], level=level, xp=xp, next_xp=xp_needed, progress=progress)
+    top_users_cursor = users_collection.find(
+        {}, 
+        {'username': 1, 'level': 1, 'xp': 1}
+    ).sort([('level', -1), ('xp', -1)]).limit(10)
+    
+    top_users = list(top_users_cursor)
 
-# NEW: A route to test the level-up logic!
+    return render_template('hub.html', 
+                           username=user['username'], 
+                           level=level, 
+                           xp=xp, 
+                           next_xp=xp_needed, 
+                           progress=progress,
+                           top_users=top_users)
+
 @app.route('/test_xp')
 def test_xp():
     if 'username' not in session:

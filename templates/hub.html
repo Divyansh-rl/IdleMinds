@@ -24,7 +24,7 @@
             --btn-text: #000000;
             --accent-color: #ffffff; 
             --accent-hover: #cccccc;
-            --xp-fill: #a3a3a3;
+            --xp-fill: #727272;
             --dropdown-bg: #2b2b2b; --dropdown-hover: #3b3b3b;
         }
 
@@ -93,8 +93,8 @@
 
         .container { padding: 50px; max-width: 1200px; margin: 0 auto; text-align: center; }
         h1 { margin-bottom: 40px; font-weight: 300; }
-        .grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; width: 300px; text-align: left; box-shadow: var(--card-shadow); transition: all 0.3s ease; }
+        
+        .card { max-width: 100%; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 30px; width: 300px; text-align: left; box-shadow: var(--card-shadow); transition: all 0.3s ease; }
         .card:hover { transform: translateY(-5px); box-shadow: var(--card-hover-shadow); }
         .card h2 { margin-top: 0; color: var(--text-main); font-size: 22px; }
         .card p { color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; }
@@ -144,6 +144,108 @@
             letter-spacing: 1px;
         }
 
+      /* --- 1. BREAK THE STRAIGHTJACKET --- */
+        main.container {
+            max-width: 96% !important; /* Lets the page stretch almost screen-to-screen */
+        }
+
+        /* --- 2. DASHBOARD LAYOUT --- */
+        .dashboard-layout {
+            display: flex;
+            justify-content: space-between; 
+            align-items: flex-start;
+            gap: 60px; /* Pushes the leaderboard far away from the games */
+            width: 100%;
+            max-width: 1600px; /* Massive allowance for ultra-wide monitors */
+            margin: 0 auto;
+        }
+
+        /* --- 3. THE GAMES COLUMN --- */
+        .games-column {
+            flex: 1; /* Tells the games grid to claim ALL the massive new empty space */
+        }
+
+        /* --- 4. THE 3-CARD GRID --- */
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* THE MAGIC: Centers the orphaned bottom cards! */
+            gap: 35px; /* Gives them plenty of breathing room */
+            margin-top: 20px;
+        }
+
+        /* --- 5. THE LEADERBOARD --- */
+        .sidebar-column {
+            width: 320px; /* Gives the leaderboard a solid size on the right edge */
+            flex-shrink: 0; /* Stops the games from crushing it */
+        }
+
+        /* Responsive stack for mobile */
+        @media (max-width: 1300px) {
+            /* If the screen gets too small for 3 big cards, drop cleanly to 2 */
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* --- DEMOTED LEADERBOARD WIDGET --- */
+        .leaderboard-card {
+            background-color: var(--nav-bg); 
+            border-radius: 12px;
+            padding: 15px; /* Tighter padding */
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Much softer shadow */
+            border: 1px solid var(--border-color); /* Thinner border */
+            
+            /* Visual Demotion: Faded out slightly until the user hovers over it */
+            opacity: 0.75; 
+            transition: opacity 0.3s ease;
+        }
+        
+        .leaderboard-card:hover {
+            opacity: 1; /* Lights back up when they look at it */
+        }
+        
+        .leaderboard-title {
+            font-family: 'Alfa Slab One', serif; 
+            color: var(--text-muted); /* Gray text instead of aggressive accent color */
+            margin-top: 0; margin-bottom: 15px; 
+            font-size: 16px; /* Smaller font */
+            text-align: center; 
+            letter-spacing: 1px;
+        }
+        
+        .leaderboard-list {
+            list-style: none; padding: 0; margin: 0;
+            display: flex; flex-direction: column; gap: 8px; /* Tighter gap */
+        }
+        
+        .leaderboard-item {
+            display: flex; align-items: center; justify-content: space-between;
+            background-color: var(--card-bg); padding: 8px 12px;
+            border-radius: 6px; border: 1px solid var(--border-color);
+        }
+
+        /* Keep the Top 3 highlights! */
+        .leaderboard-item.rank-1 { border-color: #FFD700; background-color: rgba(255, 215, 0, 0.05); }
+        .leaderboard-item.rank-2 { border-color: #C0C0C0; background-color: rgba(192, 192, 192, 0.05); }
+        .leaderboard-item.rank-3 { border-color: #CD7F32; background-color: rgba(205, 127, 50, 0.05); }
+
+        .lb-rank { font-weight: 900; width: 25px; color: var(--text-muted); font-size: 14px; }
+        .lb-user { flex-grow: 1; font-weight: bold; color: var(--text-main); font-size: 13px; }
+        .lb-stats { text-align: right; line-height: 1.1; }
+        .lb-level { font-size: 12px; color: var(--text-main); font-weight: 900; }
+        .lb-xp { font-size: 10px; color: var(--text-muted); font-weight: bold; }
+        
+        /* --- RESPONSIVE FIXES --- */
+        @media (max-width: 1100px) {
+            /* Screens too small for the spacer? Drop the spacer, revert to 2 columns */
+            .dashboard-layout { grid-template-columns: 1fr 260px; }
+            .dashboard-layout::before { display: none; }
+        }
+        @media (max-width: 800px) {
+            /* Mobile? Stack everything. */
+            .dashboard-layout { grid-template-columns: 1fr; }
+        }
         
     </style>
 </head>
@@ -194,10 +296,16 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="container">
         
-        <h1>Which game would you like to play today?</h1>
-        <div class="grid">
+        <!-- NEW: The 2-Column Wrapper -->
+        <div class="dashboard-layout">
+            
+            <!-- LEFT COLUMN: Your Games -->
+            <div class="games-column">
+                <h1>Which game would you like to play today?</h1>
+                <div class="grid">
             <div class="card">
                 <img src="https://www.nytimes.com/games-assets/v2/assets/expansion-games/sudoku-card-icon.svg" class="card-icon" alt="Sudoku">
                 <h2>Sudoku</h2>
@@ -233,6 +341,34 @@
                 <a href="/play/connections" class="btn">Play Now</a>
             </div>
         </div>
+            </div>
+
+            <!-- RIGHT COLUMN: The Leaderboard -->
+            <div class="sidebar-column">
+                <div class="leaderboard-card">
+                    <h2 class="leaderboard-title">🏆 Top Minds</h2>
+                    <ul class="leaderboard-list">
+                        
+                        <!-- Jinja automatically loops through our top 10 users! -->
+                        {% for u in top_users %}
+                        
+                        <!-- loop.index gives us #1, #2, #3, etc., allowing us to style the top 3 ranks -->
+                        <li class="leaderboard-item {% if loop.index <= 3 %}rank-{{ loop.index }}{% endif %}">
+                            <span class="lb-rank">#{{ loop.index }}</span>
+                            <span class="lb-user">{{ u.username }}</span>
+                            <div class="lb-stats">
+                                <div class="lb-level">Lvl {{ u.level|default(1) }}</div>
+                                <div class="lb-xp">{{ u.xp|default(0) }} XP</div>
+                            </div>
+                        </li>
+                        
+                        {% endfor %}
+                        
+                    </ul>
+                </div>
+            </div>
+
+        </div> <!-- End of Dashboard Layout -->
     </main>
 
     <script>
