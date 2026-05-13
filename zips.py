@@ -3,6 +3,8 @@ import numpy as np
 import random
 import time
 import threading
+import requests
+import urllib
 
 class ZipLogic:
     def __init__(self, grid_size, anchors):
@@ -199,6 +201,14 @@ def main(page: ft.Page):
             timer_text.color = ft.Colors.GREEN_300
             next_btn.visible = True
             page.update()
+            try:
+                parsed_url = urllib.parse.urlparse(page.route)
+                query_params = urllib.parse.parse_qs(parsed_url.query)
+                current_user = query_params.get("user", [None])[0]
+                if current_user:
+                    requests.post(f"http://127.0.0.1:5000/api/server_win?user={current_user}")
+            except Exception as e:
+                print(f"Background API Error (Game is still safe!): {e}")
 
     def load_level(lvl_idx):
         nonlocal game_instance, start_time, is_solved

@@ -1,6 +1,8 @@
 import flet as ft
 import numpy as np
 import random
+import requests
+import urllib.parse
 
 def is_safe(board, r, c, num):
     if num in board[r, :] or num in board[:, c]: return False
@@ -252,6 +254,15 @@ def main(page: ft.Page):
                 snack = ft.SnackBar(content=ft.Text("🎉 YOU WON! 🎉", size=20, weight=ft.FontWeight.BOLD), bgcolor=ft.Colors.GREEN_700)
                 page.overlay.append(snack)
                 snack.open = True
+                page.update()
+                try:
+                    parsed_url = urllib.parse.urlparse(page.route)
+                    query_params = urllib.parse.parse_qs(parsed_url.query)
+                    current_user = query_params.get("user", [None])[0]
+                    if current_user:
+                        requests.post(f"http://127.0.0.1:5000/api/server_win?user={current_user}")
+                except Exception as e:
+                    print(f"Background API Error (Game is still safe!): {e}")
 
             cells[(r, c)].update()
             error_dots[(r, c)].update()

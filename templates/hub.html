@@ -13,6 +13,7 @@
             --btn-text: #ffffff;
             --accent-color: #000000; 
             --accent-hover: #333333; 
+            --xp-fill: #6c757d;
             --dropdown-bg: #ffffff; --dropdown-hover: #f1f3f5;
         }
 
@@ -23,6 +24,7 @@
             --btn-text: #000000;
             --accent-color: #ffffff; 
             --accent-hover: #cccccc;
+            --xp-fill: #a3a3a3;
             --dropdown-bg: #2b2b2b; --dropdown-hover: #3b3b3b;
         }
 
@@ -98,6 +100,51 @@
         .card p { color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; }
         .btn { display: block; text-align: center; background-color: var(--accent-color); color: var(--btn-text); padding: 12px; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background-color 0.2s; }
         .btn:hover { background-color: var(--accent-hover); }
+
+        /* --- INTEGRATED XP CARD --- */
+        .user-section { 
+            position: relative; display: flex; align-items: center; gap: 15px; 
+        }
+        
+        .xp-card {
+            display: flex; align-items: stretch; height: 36px;
+            border-radius: 8px; overflow: hidden;
+            border: 2px solid var(--accent-color);
+            background-color: var(--nav-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .xp-level-badge {
+            background-color: var(--accent-color);
+            color: var(--btn-text);
+            padding: 0 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 16px;
+            font-family: 'Alfa Slab One', serif; /* Matching your logo font! */
+        }
+        
+        .xp-bar-container {
+            position: relative; width: 160px; /* Wider bar to fit the text nicely */
+            background-color: var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .xp-bar-fill {
+            position: absolute; top: 0; left: 0; bottom: 0;
+            background-color: var(--xp-fill); /* A glowing blue for the fill */
+            z-index: 1; transition: width 0.4s ease;
+        }
+        
+        .xp-text {
+            position: relative; z-index: 2; /* Forces text to sit ON TOP of the fill */
+            font-size: 13px; font-weight: bold;
+            color: #ffffff; /* Always white */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Strong shadow ensures it is readable over light and dark backgrounds */
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            letter-spacing: 1px;
+        }
+
+        
     </style>
 </head>
 <body>
@@ -124,18 +171,31 @@
         </div>
         
         <div class="user-section">
+            
+            <div class="xp-card">
+                <div class="xp-level-badge">{{ level }}</div>
+                <div class="xp-bar-container">
+                    <div class="xp-bar-fill" style="width: {{ progress }}%;"></div>
+                    <div class="xp-text">{{ xp }} / {{ next_xp }}</div>
+                </div>
+            </div>
+
             <div class="avatar" id="avatarBtn">{{ username[0]|upper }}</div>
+            
             <div class="dropdown" id="userDropdown">
                 <div class="dropdown-header">Logged in as {{ username }}</div>
+                
                 <button class="dropdown-item" id="themeToggleBtn">
-                     <span id="themeText">Dark Mode</span><span id="themeIcon">🌙</span>
+                    <span id="themeText">Dark Mode</span><span id="themeIcon">🌙</span> 
                 </button>
+                
                 <a href="/logout" class="dropdown-item">Logout</a>
             </div>
         </div>
     </header>
 
     <main class="container">
+        
         <h1>Which game would you like to play today?</h1>
         <div class="grid">
             <div class="card">
@@ -214,6 +274,10 @@
             if (theme === 'dark') { themeIcon.textContent = '☀️'; themeText.textContent = 'Light Mode'; } 
             else { themeIcon.textContent = '🌙'; themeText.textContent = 'Dark Mode'; }
         }
+
+        const xpBar = document.getElementById('xpBar');
+    const progressValue = xpBar.getAttribute('data-progress');
+    xpBar.style.width = progressValue + '%';
     </script>
 </body>
 </html>

@@ -5,6 +5,8 @@ import flet as ft
 import threading
 import time
 import random
+import requests
+import urllib
 
 # ---------------------------------------------------------
 # 1. Data Models & Game Logic
@@ -412,6 +414,15 @@ def main(page: ft.Page):
                 app_state["timer_text"].update()
                 
                 show_popup("Yes you solved it!", "OK", "#4CAF50")
+                page.update()
+                try:
+                    parsed_url = urllib.parse.urlparse(page.route)
+                    query_params = urllib.parse.parse_qs(parsed_url.query)
+                    current_user = query_params.get("user", [None])[0]
+                    if current_user:
+                        requests.post(f"http://127.0.0.1:5000/api/server_win?user={current_user}")
+                except Exception as e:
+                    print(f"Background API Error (Game is still safe!): {e}")
 
         grid_rows: list[ft.Control] = []
         for r in range(game.rows):

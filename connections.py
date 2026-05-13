@@ -1,6 +1,8 @@
 import numpy as np
 import flet as ft
 import random
+import requests
+import urllib
 
 weekly_groups = {
     "Monday": {
@@ -125,6 +127,15 @@ def main(page: ft.Page):
 
             if solved_groups == 4:
                 result_text.value = "🎉 You Won The Game"
+                page.update()
+                try:
+                    parsed_url = urllib.parse.urlparse(page.route)
+                    query_params = urllib.parse.parse_qs(parsed_url.query)
+                    current_user = query_params.get("user", [None])[0]
+                    if current_user:
+                        requests.post(f"http://127.0.0.1:5000/api/server_win?user={current_user}")
+                except Exception as e:
+                    print(f"Background API Error (Game is still safe!): {e}")
 
             if mistakes == 4:
                 result_text.value = "💀 Game Over!"

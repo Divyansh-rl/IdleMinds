@@ -1,6 +1,8 @@
 import flet as ft
 import numpy as np
 import random
+import requests
+import urllib
 
 MAX_TRIES = 5
 
@@ -120,6 +122,15 @@ def main(page: ft.Page):
             message.value = "🎉 You won!"
             reveal.value = f"Word: {current_word}"
             input_box.disabled = True
+            page.update()
+            try:
+                parsed_url = urllib.parse.urlparse(page.route)
+                query_params = urllib.parse.parse_qs(parsed_url.query)
+                current_user = query_params.get("user", [None])[0]
+                if current_user:
+                    requests.post(f"http://127.0.0.1:5000/api/server_win?user={current_user}")
+            except Exception as e:
+                print(f"Background API Error (Game is still safe!): {e}")
 
         elif len(guesses) == MAX_TRIES:
             message.value = "❌ Game Over!"
