@@ -70,6 +70,27 @@
         .brand { font-family: 'Merriweather', serif;font-size: 24px; font-weight: 900; letter-spacing: 1px; color: var(--accent-color); text-decoration: none; }
         
         .user-section { position: relative; }
+        /* --- CONCISE STREAK BADGE --- */
+        .streak-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            background-color: rgba(255, 107, 107, 0.1); /* Soft red tint */
+            color: #ff6b6b; /* Fire color */
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 900;
+            font-size: 14px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            margin-right: 15px; /* Pushes the XP bar away slightly */
+            cursor: default;
+            transition: transform 0.2s;
+        }
+        
+        .streak-badge:hover {
+            transform: scale(1.05); /* Tiny pop effect on hover */
+        }
         .avatar { width: 45px; height: 45px; border-radius: 50%; background-color: #2b6c92;; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; cursor: pointer; user-select: none; transition: transform 0.2s; }
         .avatar:hover { transform: scale(1.05); }
         .dropdown { position: absolute; right: 0; top: 60px; background-color: var(--dropdown-bg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--card-shadow); width: 200px; display: none; flex-direction: column; overflow: hidden; z-index: 100; }
@@ -247,6 +268,114 @@
             .dashboard-layout { grid-template-columns: 1fr; }
         }
         
+        /* --- DAILY BANNER WIDGET --- */
+        .daily-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px 25px;
+            margin-bottom: 40px; /* Space between banner and games */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            width: 100%;
+        }
+
+        /* Streak Section (Left Side) */
+        .streak-section {
+            display: flex; align-items: center; gap: 10px;
+            font-family: 'Alfa Slab One', serif;
+            font-size: 20px;
+            color: #ff6b6b; /* Soft fire color */
+        }
+        .streak-fire { font-size: 24px; }
+
+        /* Quest Section (Right Side) */
+        .quest-section {
+            display: flex; align-items: center; gap: 20px;
+        }
+        
+        .quest-info { font-size: 14px; color: var(--text-main); }
+        .quest-reward { font-weight: bold; color: var(--xp-fill); }
+
+        .quest-bar-bg {
+            position: relative; width: 200px; height: 24px;
+            background-color: var(--border-color);
+            border-radius: 20px; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .quest-bar-fill {
+            position: absolute; top: 0; left: 0; bottom: 0;
+            background-color: #4CAF50; /* Green for quest completion! */
+            z-index: 1; transition: width 0.5s ease;
+        }
+        
+        /* If quest is completed, make the bar pulse gold */
+        .quest-bar-fill.completed { background-color: #FFD700; }
+
+        .quest-text {
+            position: relative; z-index: 2; font-size: 12px;
+            font-weight: bold; color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 800px) {
+            .daily-banner { flex-direction: column; gap: 15px; text-align: center; }
+            .quest-section { flex-direction: column; gap: 10px; }
+        }
+
+        /* --- DROPDOWN QUEST WIDGET --- */
+        .dropdown-quest {
+            padding: 15px 20px;
+            cursor: default; /* Tells the user they can't click it like a button */
+            border-bottom: 1px solid var(--border-color); /* Acts as a divider */
+            background-color: rgba(0, 0, 0, 0.02); /* Very subtle background tint */
+        }
+        
+        /* Dark mode adjustment for the subtle background */
+        [data-theme="dark"] .dropdown-quest {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .dq-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 4px; 
+        }
+        
+        .dq-title { font-weight: bold; font-size: 14px; color: var(--text-main); }
+        .dq-reward { font-size: 12px; color: var(--xp-fill); font-weight: 900; }
+        .dq-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        
+        /* The Mini Progress Bar */
+        .dq-bar-bg { 
+            width: 100%; 
+            height: 8px; /* Very thin and sleek */
+            background-color: var(--border-color); 
+            border-radius: 4px; 
+            overflow: hidden; 
+        }
+        
+        .dq-bar-fill { 
+            height: 100%; 
+            background-color: #4CAF50; /* Green for progress */
+            transition: width 0.4s ease; 
+        }
+        
+        /* Gold when completed! */
+        .dq-bar-fill.completed { background-color: #FFD700; }
+        
+        .dq-status { 
+            font-size: 11px; 
+            text-align: right; 
+            margin-top: 5px; 
+            font-weight: bold; 
+            color: var(--text-muted); 
+        }
+
     </style>
 </head>
 <body>
@@ -282,11 +411,35 @@
                 </div>
             </div>
 
+            <div class="streak-badge" title="{{ streak }} Day Streak!">
+                🔥 {{ streak }}
+            </div>
+
             <div class="avatar" id="avatarBtn">{{ username[0]|upper }}</div>
             
             <div class="dropdown" id="userDropdown">
                 <div class="dropdown-header">Logged in as {{ username }}</div>
                 
+                <div class="dropdown-quest">
+                    <div class="dq-header">
+                        <span class="dq-title">Daily Quest</span>
+                        <span class="dq-reward">+100 XP</span>
+                    </div>
+                    <div class="dq-desc">Win {{ quest_goal }} Games today.</div>
+                    
+                    <div class="dq-bar-bg">
+                        <div class="dq-bar-fill {% if quest_completed %}completed{% endif %}" style="width: {{ quest_percent }}%;"></div>
+                    </div>
+                    
+                    <div class="dq-status">
+                        {% if quest_completed %}
+                            Completed!
+                        {% else %}
+                            {{ quest_progress }} / {{ quest_goal }}
+                        {% endif %}
+                    </div>
+                </div>
+
                 <button class="dropdown-item" id="themeToggleBtn">
                     <span id="themeText">Dark Mode</span><span id="themeIcon">🌙</span> 
                 </button>
