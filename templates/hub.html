@@ -70,28 +70,31 @@
         .brand { font-family: 'Merriweather', serif;font-size: 24px; font-weight: 900; letter-spacing: 1px; color: var(--accent-color); text-decoration: none; }
         
         .user-section { position: relative; }
-        /* --- CONCISE STREAK BADGE --- */
         .streak-badge {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
-            background-color: rgba(255, 107, 107, 0.1); /* Soft red tint */
-            color: #ff6b6b; /* Fire color */
+            background-color: rgba(255, 107, 107, 0.1);
+            color: #ff6b6b; 
             padding: 6px 12px;
             border-radius: 20px;
             font-weight: 900;
             font-size: 14px;
             border: 1px solid rgba(255, 107, 107, 0.3);
-            margin-right: 15px; /* Pushes the XP bar away slightly */
+            margin-right: 15px; 
             cursor: default;
             transition: transform 0.2s;
         }
         
         .streak-badge:hover {
-            transform: scale(1.05); /* Tiny pop effect on hover */
+            transform: scale(1.05);
         }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; background-color: #2b6c92;; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; cursor: pointer; user-select: none; transition: transform 0.2s; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background-color: #2b6c92; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; cursor: pointer; user-select: none; transition: transform 0.2s; }
+        .avatar-2 { width: 80px; height: 80px; border-radius: 50%; 
+            background: #2b6c92; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .avatar:hover { transform: scale(1.05); }
         .dropdown { position: absolute; right: 0; top: 60px; background-color: var(--dropdown-bg); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--card-shadow); width: 200px; display: none; flex-direction: column; overflow: hidden; z-index: 100; }
         .dropdown.active { display: flex; }
@@ -122,7 +125,6 @@
         .btn { display: block; text-align: center; background-color: var(--accent-color); color: var(--btn-text); padding: 12px; text-decoration: none; border-radius: 6px; font-weight: bold; transition: background-color 0.2s; }
         .btn:hover { background-color: var(--accent-hover); }
 
-        /* --- INTEGRATED XP CARD --- */
         .user-section { 
             position: relative; display: flex; align-items: center; gap: 15px; 
         }
@@ -141,103 +143,94 @@
             padding: 0 15px;
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 16px;
-            font-family: 'Alfa Slab One', serif; /* Matching your logo font! */
+            font-family: 'Alfa Slab One', serif;
         }
         
         .xp-bar-container {
-            position: relative; width: 160px; /* Wider bar to fit the text nicely */
+            position: relative; width: 160px;
             background-color: var(--border-color);
             display: flex; align-items: center; justify-content: center;
         }
         
         .xp-bar-fill {
             position: absolute; top: 0; left: 0; bottom: 0;
-            background-color: var(--xp-fill); /* A glowing blue for the fill */
+            background-color: var(--xp-fill); 
             z-index: 1; transition: width 0.4s ease;
         }
         
         .xp-text {
-            position: relative; z-index: 2; /* Forces text to sit ON TOP of the fill */
+            position: relative; z-index: 2; 
             font-size: 13px; font-weight: bold;
-            color: #ffffff; /* Always white */
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Strong shadow ensures it is readable over light and dark backgrounds */
+            color: #ffffff;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8); 
             font-family: 'Segoe UI', Tahoma, sans-serif;
             letter-spacing: 1px;
         }
 
-      /* --- 1. BREAK THE STRAIGHTJACKET --- */
         main.container {
-            max-width: 96% !important; /* Lets the page stretch almost screen-to-screen */
+            max-width: 96% !important;
         }
 
-        /* --- 2. DASHBOARD LAYOUT --- */
         .dashboard-layout {
             display: flex;
             justify-content: space-between; 
             align-items: flex-start;
-            gap: 60px; /* Pushes the leaderboard far away from the games */
+            gap: 60px; 
             width: 100%;
-            max-width: 1600px; /* Massive allowance for ultra-wide monitors */
+            max-width: 1600px; 
             margin: 0 auto;
         }
 
-        /* --- 3. THE GAMES COLUMN --- */
         .games-column {
-            flex: 1; /* Tells the games grid to claim ALL the massive new empty space */
+            flex: 1; 
         }
 
-        /* --- 4. THE 3-CARD GRID --- */
         .grid {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* THE MAGIC: Centers the orphaned bottom cards! */
-            gap: 35px; /* Gives them plenty of breathing room */
+            justify-content: center;
+            gap: 35px; 
             margin-top: 20px;
         }
 
-        /* --- 5. THE LEADERBOARD --- */
         .sidebar-column {
-            width: 320px; /* Gives the leaderboard a solid size on the right edge */
-            flex-shrink: 0; /* Stops the games from crushing it */
+            width: 320px;
+            flex-shrink: 0;
         }
 
-        /* Responsive stack for mobile */
         @media (max-width: 1300px) {
-            /* If the screen gets too small for 3 big cards, drop cleanly to 2 */
             .grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
 
-        /* --- DEMOTED LEADERBOARD WIDGET --- */
         .leaderboard-card {
             background-color: var(--nav-bg); 
             border-radius: 12px;
-            padding: 15px; /* Tighter padding */
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Much softer shadow */
-            border: 1px solid var(--border-color); /* Thinner border */
+            padding: 15px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
             
-            /* Visual Demotion: Faded out slightly until the user hovers over it */
             opacity: 0.75; 
             transition: opacity 0.3s ease;
         }
         
         .leaderboard-card:hover {
-            opacity: 1; /* Lights back up when they look at it */
+            opacity: 1; 
         }
         
         .leaderboard-title {
             font-family: 'Alfa Slab One', serif; 
-            color: var(--text-muted); /* Gray text instead of aggressive accent color */
+            color: var(--text-muted); 
             margin-top: 0; margin-bottom: 15px; 
-            font-size: 16px; /* Smaller font */
+            font-size: 16px;
             text-align: center; 
             letter-spacing: 1px;
         }
         
         .leaderboard-list {
             list-style: none; padding: 0; margin: 0;
-            display: flex; flex-direction: column; gap: 8px; /* Tighter gap */
+            display: flex; flex-direction: column; gap: 8px; 
         }
         
         .leaderboard-item {
@@ -246,7 +239,6 @@
             border-radius: 6px; border: 1px solid var(--border-color);
         }
 
-        /* Keep the Top 3 highlights! */
         .leaderboard-item.rank-1 { border-color: #FFD700; background-color: rgba(255, 215, 0, 0.05); }
         .leaderboard-item.rank-2 { border-color: #C0C0C0; background-color: rgba(192, 192, 192, 0.05); }
         .leaderboard-item.rank-3 { border-color: #CD7F32; background-color: rgba(205, 127, 50, 0.05); }
@@ -257,18 +249,14 @@
         .lb-level { font-size: 12px; color: var(--text-main); font-weight: 900; }
         .lb-xp { font-size: 10px; color: var(--text-muted); font-weight: bold; }
         
-        /* --- RESPONSIVE FIXES --- */
         @media (max-width: 1100px) {
-            /* Screens too small for the spacer? Drop the spacer, revert to 2 columns */
             .dashboard-layout { grid-template-columns: 1fr 260px; }
             .dashboard-layout::before { display: none; }
         }
         @media (max-width: 800px) {
-            /* Mobile? Stack everything. */
             .dashboard-layout { grid-template-columns: 1fr; }
         }
         
-        /* --- DAILY BANNER WIDGET --- */
         .daily-banner {
             display: flex;
             justify-content: space-between;
@@ -277,21 +265,19 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 15px 25px;
-            margin-bottom: 40px; /* Space between banner and games */
+            margin-bottom: 40px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             width: 100%;
         }
 
-        /* Streak Section (Left Side) */
         .streak-section {
             display: flex; align-items: center; gap: 10px;
             font-family: 'Alfa Slab One', serif;
             font-size: 20px;
-            color: #ff6b6b; /* Soft fire color */
+            color: #ff6b6b; 
         }
         .streak-fire { font-size: 24px; }
 
-        /* Quest Section (Right Side) */
         .quest-section {
             display: flex; align-items: center; gap: 20px;
         }
@@ -308,11 +294,10 @@
 
         .quest-bar-fill {
             position: absolute; top: 0; left: 0; bottom: 0;
-            background-color: #4CAF50; /* Green for quest completion! */
+            background-color: #4CAF50;
             z-index: 1; transition: width 0.5s ease;
         }
         
-        /* If quest is completed, make the bar pulse gold */
         .quest-bar-fill.completed { background-color: #FFD700; }
 
         .quest-text {
@@ -326,15 +311,13 @@
             .quest-section { flex-direction: column; gap: 10px; }
         }
 
-        /* --- DROPDOWN QUEST WIDGET --- */
         .dropdown-quest {
             padding: 15px 20px;
-            cursor: default; /* Tells the user they can't click it like a button */
-            border-bottom: 1px solid var(--border-color); /* Acts as a divider */
-            background-color: rgba(0, 0, 0, 0.02); /* Very subtle background tint */
+            cursor: default; 
+            border-bottom: 1px solid var(--border-color); 
+            background-color: rgba(0, 0, 0, 0.02); 
         }
         
-        /* Dark mode adjustment for the subtle background */
         [data-theme="dark"] .dropdown-quest {
             background-color: rgba(255, 255, 255, 0.02);
         }
@@ -350,10 +333,9 @@
         .dq-reward { font-size: 12px; color: var(--xp-fill); font-weight: 900; }
         .dq-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
         
-        /* The Mini Progress Bar */
         .dq-bar-bg { 
             width: 100%; 
-            height: 8px; /* Very thin and sleek */
+            height: 8px; 
             background-color: var(--border-color); 
             border-radius: 4px; 
             overflow: hidden; 
@@ -361,11 +343,10 @@
         
         .dq-bar-fill { 
             height: 100%; 
-            background-color: #4CAF50; /* Green for progress */
+            background-color: #4CAF50; 
             transition: width 0.4s ease; 
         }
         
-        /* Gold when completed! */
         .dq-bar-fill.completed { background-color: #FFD700; }
         
         .dq-status { 
@@ -376,6 +357,137 @@
             color: var(--text-muted); 
         }
 
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(4px);
+            display: none; 
+            align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .profile-modal {
+            background-color: var(--nav-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px; width: 450px; max-width: 90%;
+            padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            position: relative; transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .profile-modal { transform: translateY(0); }
+
+        .close-modal {
+            position: absolute; top: 15px; right: 20px;
+            background: none; border: none; font-size: 24px;
+            color: var(--text-muted); cursor: pointer; transition: color 0.2s;
+        }
+        .close-modal:hover { color: #ff6b6b; }
+
+        .modal-header { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+        .modal-avatar { 
+            width: 80px; height: 80px; border-radius: 50%; 
+            background: var(--accent-color); color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .modal-user-info h2 { margin: 0 0 5px 0; font-family: 'Alfa Slab One', serif; font-size: 24px; color: var(--text-main); }
+        .join-date { font-size: 13px; color: var(--text-muted); font-weight: bold; }
+
+        .stats-grid { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; 
+            margin-bottom: 25px; text-align: center; 
+        }
+        .stat-box { background: var(--card-bg); padding: 15px 10px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .stat-value { font-size: 22px; font-weight: 900; color: var(--text-main); margin-bottom: 5px; }
+        .stat-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+
+        .badges-section h3 { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+        .badges-grid { display: flex; gap: 15px; justify-content: center; }
+        
+        .badge { 
+            width: 60px; height: 60px; border-radius: 50%;
+            background: var(--card-bg); border: 2px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center; font-size: 28px;
+            position: relative; cursor: help; transition: transform 0.2s;
+        }
+        .badge:hover { transform: scale(1.1); }
+        
+        .badge.unlocked { border-color: #FFD700; background: rgba(255, 215, 0, 0.1); }
+        .badge.unlocked::after { 
+            content: "✓"; position: absolute; bottom: -5px; right: -5px;
+            background: #4CAF50; color: white; border-radius: 50%;
+            width: 20px; height: 20px; font-size: 12px;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+        }
+        
+        .modal-xp-bar { background: var(--card-bg); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px solid var(--border-color); }
+
+
+        .streak-icon {
+            width: 16px; 
+            height: 16px;
+            object-fit: contain; 
+        }
+
+        .badge-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: grayscale(100%) opacity(0.3);
+            transition: filter 0.3s ease;
+        }
+
+        .badge.unlocked .badge-icon {
+            filter: grayscale(0%) opacity(1);
+        }
+
+        .leaderboard-title, .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+        }
+
+        .title-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+        
+        .dropdown-item:hover .menu-icon {
+            opacity: 1;
+        }
+
+        .logout-btn {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        .logout-btn .menu-icon {
+            filter: invert(53%) sepia(51%) saturate(3620%) hue-rotate(320deg) brightness(101%) contrast(105%);
+        }
+
+        .avatar-svg {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            filter: invert(1); 
+        }
+
+        .modal-avatar-svg {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+            filter: invert(1);
+        }
     </style>
 </head>
 <body>
@@ -412,7 +524,8 @@
             </div>
 
             <div class="streak-badge" title="{{ streak }} Day Streak!">
-                🔥 {{ streak }}
+                <img src="{{ url_for('static', filename='icons/icons8-fire-94.png') }}" class="streak-icon" alt="Streak">
+                     {{ streak }}
             </div>
 
             <div class="avatar" id="avatarBtn">{{ username[0]|upper }}</div>
@@ -440,11 +553,14 @@
                     </div>
                 </div>
 
+                <!-- Inside your dropdownMenu -->
+                <button class="dropdown-item" id="openProfileBtn" style="font-weight: bold;"><img src="{{ url_for('static', filename='icons/icons8-profile-48.png') }}" class="menu-icon" alt="Profile"> My Profile</button>
+
                 <button class="dropdown-item" id="themeToggleBtn">
-                    <span id="themeText">Dark Mode</span><span id="themeIcon">🌙</span> 
+                    <span id="themeIcon"></span> <span id="themeText">Dark Mode</span>
                 </button>
                 
-                <a href="/logout" class="dropdown-item">Logout</a>
+                <a href="/logout" class="dropdown-item"><img src="{{ url_for('static', filename='icons/icons8-logout-40.png') }}" class="menu-icon" alt="Logout"> Logout</a>
             </div>
         </div>
     </header>
@@ -499,7 +615,7 @@
             <!-- RIGHT COLUMN: The Leaderboard -->
             <div class="sidebar-column">
                 <div class="leaderboard-card">
-                    <h2 class="leaderboard-title">🏆 Top Minds</h2>
+                    <h2 class="leaderboard-title"><img src="{{ url_for('static', filename='icons/icons8-trophy-48.png') }}" class="title-icon" alt="Trophy"> Top Minds</h2>
                     <ul class="leaderboard-list">
                         
                         <!-- Jinja automatically loops through our top 10 users! -->
@@ -523,6 +639,66 @@
 
         </div> <!-- End of Dashboard Layout -->
     </main>
+
+    <!-- NEW: PLAYER PROFILE MODAL -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="profile-modal">
+            <button class="close-modal" id="closeProfileBtn">&times;</button>
+            
+            <div class="modal-header">
+                <div class="avatar-2">{{ username[0]|upper }}</div>
+                <div class="modal-user-info">
+                    <h2>{{ username }}</h2>
+                    <div class="join-date">Member since {{ join_date }}</div>
+                </div>
+            </div>
+
+            <div class="modal-xp-bar">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold;">
+                    <span style="color: var(--accent-color);">Level {{ level }}</span>
+                    <span style="color: var(--text-muted);">{{ xp }} / {{ next_xp }} XP</span>
+                </div>
+                <div style="width: 100%; height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden;">
+                    <div style="height: 100%; width: {{ progress }}%; background: var(--xp-fill); transition: width 0.5s;"></div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">{{ games_played }}</div>
+                    <div class="stat-label">Games</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">{{ win_rate }}%</div>
+                    <div class="stat-label">Win Rate</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">{{ streak }}</div>
+                    <div class="stat-label">Max Streak</div>
+                </div>
+            </div>
+
+            <div class="badges-section">
+                <h3>Unlocked Badges</h3>
+                <div class="badges-grid">
+                    <!-- Badge 1: First Blood (Unlocked if they have 1 win) -->
+                    <div class="badge {% if games_won >= 1 %}unlocked{% endif %}" title="Win your first game">
+                        
+                        <img src="{{ url_for('static', filename='icons/icons8-blood-100.png') }}" class="badge-icon" alt="First Brain">
+                    </div>
+                    <!-- Badge 2: Sudoku Scholar (Unlocked at 10 wins) -->
+                    <div class="badge {% if games_won >= 10 %}unlocked{% endif %}" title="Win 10 games">
+                        <img src="{{ url_for('static', filename='icons/icons8-brain-100.png') }}" class="badge-icon" alt="First Brain">
+                    </div>
+                    <!-- Badge 3: Dedication (Unlocked at Level 5) -->
+                    <div class="badge {% if level >= 5 %}unlocked{% endif %}" title="Reach Level 5">
+                        <img src="{{ url_for('static', filename='icons/icons8-star-64.png') }}" class="badge-icon" alt="First Brain">
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
 
     <script>
         const menuBtn = document.getElementById('menuBtn');
@@ -565,8 +741,98 @@
         }
 
         const xpBar = document.getElementById('xpBar');
-    const progressValue = xpBar.getAttribute('data-progress');
-    xpBar.style.width = progressValue + '%';
+        const progressValue = xpBar.getAttribute('data-progress');
+        xpBar.style.width = progressValue + '%';
+
+    </script>
+
+    <!-- ========================================== -->
+    <!-- PLAYER PROFILE MODAL (HTML + JS BUNDLE)    -->
+    <!-- ========================================== -->
+    
+    <div class="modal-overlay" id="profileModal">
+        <div class="profile-modal">
+            <button class="close-modal" id="closeProfileBtn">&times;</button>
+            
+            <div class="modal-header">
+                <div class="modal-avatar">{{ username[0]|upper }}</div>
+                <div class="modal-user-info">
+                    <h2>{{ username }}</h2>
+                    <div class="join-date">Member since {{ join_date }}</div>
+                </div>
+            </div>
+
+            <div class="modal-xp-bar">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold;">
+                    <span style="color: var(--accent-color);">Level {{ level }}</span>
+                    <span style="color: var(--text-muted);">{{ xp }} / {{ next_xp }} XP</span>
+                </div>
+                <div style="width: 100%; height: 12px; background: var(--border-color); border-radius: 10px; overflow: hidden;">
+                    <div style="height: 100%; width: {{ progress }}%; background: var(--xp-fill); transition: width 0.5s;"></div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">{{ games_played }}</div>
+                    <div class="stat-label">Games</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">{{ win_rate }}%</div>
+                    <div class="stat-label">Win Rate</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">{{ streak }}</div>
+                    <div class="stat-label">Max Streak</div>
+                </div>
+            </div>
+
+            <div class="badges-section">
+                <h3>Unlocked Badges</h3>
+                <div class="badges-grid">
+                    <div class="badge {% if games_won >= 1 %}unlocked{% endif %}" title="Win your first game"><img src="{{ url_for('static', filename='icons/icons8-blood-100.png') }}" class="badge-icon" alt="First Brain"></div>
+                    <div class="badge {% if games_won >= 10 %}unlocked{% endif %}" title="Win 10 games"><img src="{{ url_for('static', filename='icons/icons8-brain-100.png') }}" class="badge-icon" alt="First Brain"></div>
+                    <div class="badge {% if level >= 5 %}unlocked{% endif %}" title="Reach Level 5"><img src="{{ url_for('static', filename='icons/icons8-star-64.png') }}" class="badge-icon" alt="First Brain"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ISOLATED SCRIPT FOR MODAL -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("MODAL SCRIPT IS ALIVE!"); 
+
+            const profileModal = document.getElementById('profileModal');
+            const openProfileBtn = document.getElementById('openProfileBtn');
+            const closeProfileBtn = document.getElementById('closeProfileBtn');
+
+            if (openProfileBtn && profileModal) {
+                
+                document.body.addEventListener('click', (e) => {
+                    if (e.target && e.target.id === 'openProfileBtn') {
+                        console.log("Profile button clicked!");
+                        profileModal.classList.add('active');
+                        
+                        const dropdown = document.getElementById('dropdownMenu');
+                        if (dropdown) dropdown.classList.remove('show'); 
+                    }
+                });
+
+                closeProfileBtn.addEventListener('click', () => {
+                    profileModal.classList.remove('active');
+                });
+
+                profileModal.addEventListener('click', (event) => {
+                    if (event.target === profileModal) {
+                        profileModal.classList.remove('active');
+                    }
+                });
+
+            } else {
+                console.error("Modal Error: Missing HTML elements.");
+            }
+        });
     </script>
 </body>
 </html>

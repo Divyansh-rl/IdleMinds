@@ -66,26 +66,25 @@
         }
         
         .user-section { position: relative; }
-        /* --- CONCISE STREAK BADGE --- */
         .streak-badge {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 5px;
-            background-color: rgba(255, 107, 107, 0.1); /* Soft red tint */
-            color: #ff6b6b; /* Fire color */
+            background-color: rgba(255, 107, 107, 0.1); 
+            color: #ff6b6b; 
             padding: 6px 12px;
             border-radius: 20px;
             font-weight: 900;
             font-size: 14px;
             border: 1px solid rgba(255, 107, 107, 0.3);
-            margin-right: 15px; /* Pushes the XP bar away slightly */
+            margin-right: 15px; 
             cursor: default;
             transition: transform 0.2s;
         }
         
         .streak-badge:hover {
-            transform: scale(1.05); /* Tiny pop effect on hover */
+            transform: scale(1.05); 
         }
         .avatar { width: 45px; height: 45px; border-radius: 50%; background-color: #2b6c92; color: white; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; cursor: pointer; user-select: none; transition: transform 0.2s; }
         .avatar:hover { transform: scale(1.05); }
@@ -97,7 +96,6 @@
 
         iframe { width: 100%; flex-grow: 1; border: none; display: block; }
 
-        /* --- INTEGRATED XP CARD --- */
         .user-section { 
             position: relative; display: flex; align-items: center; gap: 15px; 
         }
@@ -116,39 +114,37 @@
             padding: 0 15px;
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 16px;
-            font-family: 'Alfa Slab One', serif; /* Matching your logo font! */
+            font-family: 'Alfa Slab One', serif; 
         }
         
         .xp-bar-container {
-            position: relative; width: 160px; /* Wider bar to fit the text nicely */
+            position: relative; width: 160px;
             background-color: var(--border-color);
             display: flex; align-items: center; justify-content: center;
         }
         
         .xp-bar-fill {
             position: absolute; top: 0; left: 0; bottom: 0;
-            background-color: var(--xp-fill); /* A glowing blue for the fill */
+            background-color: var(--xp-fill); 
             z-index: 1; transition: width 0.4s ease;
         }
         
         .xp-text {
-            position: relative; z-index: 2; /* Forces text to sit ON TOP of the fill */
+            position: relative; z-index: 2; 
             font-size: 13px; font-weight: bold;
-            color: #ffffff; /* Always white */
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Strong shadow ensures it is readable over light and dark backgrounds */
+            color: #ffffff; 
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
             font-family: 'Segoe UI', Tahoma, sans-serif;
             letter-spacing: 1px;
         }
 
-        /* --- DROPDOWN QUEST WIDGET --- */
         .dropdown-quest {
             padding: 15px 20px;
-            cursor: default; /* Tells the user they can't click it like a button */
-            border-bottom: 1px solid var(--border-color); /* Acts as a divider */
-            background-color: rgba(0, 0, 0, 0.02); /* Very subtle background tint */
+            cursor: default; 
+            border-bottom: 1px solid var(--border-color); 
+            background-color: rgba(0, 0, 0, 0.02); 
         }
         
-        /* Dark mode adjustment for the subtle background */
         [data-theme="dark"] .dropdown-quest {
             background-color: rgba(255, 255, 255, 0.02);
         }
@@ -164,10 +160,9 @@
         .dq-reward { font-size: 12px; color: var(--xp-fill); font-weight: 900; }
         .dq-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
         
-        /* The Mini Progress Bar */
         .dq-bar-bg { 
             width: 100%; 
-            height: 8px; /* Very thin and sleek */
+            height: 8px; 
             background-color: var(--border-color); 
             border-radius: 4px; 
             overflow: hidden; 
@@ -175,11 +170,10 @@
         
         .dq-bar-fill { 
             height: 100%; 
-            background-color: #4CAF50; /* Green for progress */
+            background-color: #4CAF50;
             transition: width 0.4s ease; 
         }
         
-        /* Gold when completed! */
         .dq-bar-fill.completed { background-color: #FFD700; }
         
         .dq-status { 
@@ -188,6 +182,20 @@
             margin-top: 5px; 
             font-weight: bold; 
             color: var(--text-muted); 
+        }
+
+         .streak-icon {
+            width: 16px; 
+            height: 16px;
+            object-fit: contain;
+        }
+
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+            opacity: 0.7; 
+            transition: opacity 0.2s ease;
         }
     </style>
 </head>
@@ -224,7 +232,7 @@
                 </div>
             </div>
             <div class="streak-badge" title="{{ streak }} Day Streak!">
-                🔥 {{ streak }}
+                <img src="{{ url_for('static', filename='icons/icons8-fire-94.png') }}" class="streak-icon" alt="Streak"> {{ streak }}
             </div>
 
             <div class="avatar" id="avatarBtn">{{ username[0]|upper }}</div>
@@ -250,7 +258,7 @@
                         {% endif %}
                     </div>
                 </div>
-                <a href="/logout" class="dropdown-item">Logout</a>
+                <a href="/logout" class="dropdown-item"><img src="{{ url_for('static', filename='icons/icons8-logout-40.png') }}" class="menu-icon" alt="Logout"> Logout</a>
             </div>
         </div>
     </header>
@@ -278,29 +286,25 @@
         avatarBtn.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('active'); });
         document.addEventListener('click', (e) => { if (!userDropdown.contains(e.target)) { userDropdown.classList.remove('active'); } });
         
-        // Store current XP to check for changes
         let currentXp = parseInt("{{ xp }}"); 
 
         setInterval(() => {
             fetch('/api/get_xp')
             .then(response => response.json())
             .then(data => {
-                // If the database XP is higher than what the UI shows, the user won!
                 if (data.xp !== currentXp || data.level > parseInt(document.querySelector('.xp-level-badge').innerText)) {
                     
                     console.log("Win detected! Updating UI...");
                     
-                    // Update the UI smoothly
                     document.querySelector('.xp-level-badge').innerText = data.level;
                     document.querySelector('.xp-text').innerText = data.xp + ' / ' + data.next_xp;
                     document.querySelector('.xp-bar-fill').style.width = data.progress + '%';
                     
-                    // Update our tracker so it doesn't keep animating
                     currentXp = data.xp; 
                 }
             })
             .catch(error => console.error("Polling error:", error));
-        }, 2000); // Checks every 2 seconds
+        }, 2000); 
     </script>
 </body>
 </html>

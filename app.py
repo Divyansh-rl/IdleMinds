@@ -13,25 +13,21 @@ db = client.idleMinds
 users_collection = db.users
 
 def get_xp_needed(level):
-    # Level 1 = 100, Level 2 = 130, Level 3 = 169, Level 4 = 219...
     return int(100 * (1.3 ** (level - 1)))
 
-# --- HELPER FUNCTION: Daily Streaks & Quests ---
 def manage_daily_login(username):
     user = users_collection.find_one({'username': username})
     
-    # Get today and yesterday as strings (e.g., '2026-05-13')
     today_str = datetime.now().strftime('%Y-%m-%d')
     yesterday_str = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
     
     last_login = user.get('last_login_date', '')
     streak = user.get('streak', 0)
     
-    # 1. Update Streak
     if last_login == yesterday_str:
-        streak += 1 # Logged in yesterday, streak continues!
+        streak += 1
     elif last_login != today_str:
-        streak = 1 # Missed a day (or first login ever), reset to 1
+        streak = 1 
         
     # 2. Update Quest
     quest_date = user.get('quest_date', '')
@@ -82,29 +78,38 @@ def register():
 def home():
     if 'username' not in session: return redirect(url_for('login'))
     
-    # USE THE NEW FUNCTION: This ensures streaks/quests are always perfect
     user = manage_daily_login(session['username'])
     
+    if 'join_date' not in user:
+        new_date = datetime.now().strftime('%b %Y') # e.g., 'May 2026'
+        users_collection.update_one({'username': session['username']}, {'$set': {'join_date': new_date}})
+        user['join_date'] = new_date
+        
+   
+    games_played = user.get('games_played', 0)
+    games_won = user.get('games_won', 0)
+    win_rate = int((games_won / games_played) * 100) if games_played > 0 else 0
+
     level = user.get('level', 1)
     xp = user.get('xp', 0)
     xp_needed = get_xp_needed(level)
     progress = int((xp / xp_needed) * 100)
     
-    # Calculate quest percentage safely
     quest_progress = user.get('quest_progress', 0)
     quest_goal = user.get('quest_goal', 2)
     quest_percent = min(int((quest_progress / quest_goal) * 100), 100)
-
-    # Leaderboard logic stays exactly the same...
+    
     top_users_cursor = users_collection.find({}, {'username': 1, 'level': 1, 'xp': 1}).sort([('level', -1), ('xp', -1)]).limit(10)
-    top_users = list(top_users_cursor)
 
+    
     return render_template('hub.html', 
                            username=user['username'], level=level, xp=xp, 
-                           next_xp=xp_needed, progress=progress, top_users=top_users,
+                           next_xp=xp_needed, progress=progress, top_users=list(top_users_cursor),
                            streak=user.get('streak', 1), quest_progress=quest_progress, 
                            quest_goal=quest_goal, quest_percent=quest_percent, 
-                           quest_completed=user.get('quest_completed', False))
+                           quest_completed=user.get('quest_completed', False),
+                           join_date=user['join_date'], games_played=games_played, 
+                           games_won=games_won, win_rate=win_rate)
 
 @app.route('/test_xp')
 def test_xp():
@@ -113,17 +118,15 @@ def test_xp():
         
     user = users_collection.find_one({'username': session['username']})
     
-    # Let's say winning a game gives 35 XP
+    
     new_xp = user.get('xp', 0) + 35
     level = user.get('level', 1)
     xp_needed = level * 100
 
-    # Check for Level Up!
     if new_xp >= xp_needed:
-        new_xp = new_xp - xp_needed # Carry over the extra XP
+        new_xp = new_xp - xp_needed 
         level += 1
         
-    # Save the new stats back to MongoDB
     users_collection.update_one(
         {'username': session['username']}, 
         {'$set': {'xp': new_xp, 'level': level}}
@@ -157,7 +160,6 @@ def logout():
 def play_sudoku():
     if 'username' not in session: return redirect(url_for('login'))
     
-    # 1. Fetch the user's current stats
     user = users_collection.find_one({'username': session['username']})
     
     level = user.get('level', 1)
@@ -165,14 +167,13 @@ def play_sudoku():
     xp_needed = get_xp_needed(level)
     progress = int((xp / xp_needed) * 100)
     
-    # 2. Pass EVERYTHING to the template, including the streak!
     return render_template('sudoku.html', 
                            username=user['username'], 
                            level=level, 
                            xp=xp, 
                            next_xp=xp_needed, 
                            progress=progress,
-                           streak=user.get('streak', 1), # <-- THIS IS THE MISSING PIECE!
+                           streak=user.get('streak', 1), 
                            quest_progress=user.get('quest_progress', 0),
                            quest_goal=user.get('quest_goal', 2),
                            quest_percent=int((user.get('quest_progress', 0) / user.get('quest_goal', 2)) * 100) if user.get('quest_goal', 2) > 0 else 0,
@@ -181,8 +182,7 @@ def play_sudoku():
 @app.route('/play/pips')
 def play_pips():
     if 'username' not in session: return redirect(url_for('login'))
-    
-    # 1. Fetch the user's current stats
+ 
     user = users_collection.find_one({'username': session['username']})
     
     level = user.get('level', 1)
@@ -206,16 +206,14 @@ def play_pips():
 @app.route('/play/zips')
 def play_zips():
     if 'username' not in session: return redirect(url_for('login'))
-    
-    # 1. Fetch the user's current stats
+   
     user = users_collection.find_one({'username': session['username']})
     
     level = user.get('level', 1)
     xp = user.get('xp', 0)
     xp_needed = get_xp_needed(level)
     progress = int((xp / xp_needed) * 100)
-    
-    # 2. Pass EVERYTHING to the template, including the streak!
+  
     return render_template('zips.html', 
                            username=user['username'], 
                            level=level, 
@@ -232,7 +230,7 @@ def play_zips():
 def play_wordcraft():
     if 'username' not in session: return redirect(url_for('login'))
     
-    # 1. Fetch the user's current stats
+  
     user = users_collection.find_one({'username': session['username']})
     
     level = user.get('level', 1)
@@ -240,7 +238,7 @@ def play_wordcraft():
     xp_needed = get_xp_needed(level)
     progress = int((xp / xp_needed) * 100)
     
-    # 2. Pass EVERYTHING to the template, including the streak!
+    
     return render_template('wordcraft.html', 
                            username=user['username'], 
                            level=level, 
@@ -257,7 +255,7 @@ def play_wordcraft():
 def play_connections():
     if 'username' not in session: return redirect(url_for('login'))
     
-    # 1. Fetch the user's current stats
+  
     user = users_collection.find_one({'username': session['username']})
     
     level = user.get('level', 1)
@@ -265,20 +263,20 @@ def play_connections():
     xp_needed = get_xp_needed(level)
     progress = int((xp / xp_needed) * 100)
     
-    # 2. Pass EVERYTHING to the template, including the streak!
+  
     return render_template('connections.html', 
                            username=user['username'], 
                            level=level, 
                            xp=xp, 
                            next_xp=xp_needed, 
                            progress=progress,
-                           streak=user.get('streak', 1), # <-- THIS IS THE MISSING PIECE!
+                           streak=user.get('streak', 1), 
                            quest_progress=user.get('quest_progress', 0),
                            quest_goal=user.get('quest_goal', 2),
                            quest_percent=int((user.get('quest_progress', 0) / user.get('quest_goal', 2)) * 100) if user.get('quest_goal', 2) > 0 else 0,
                            quest_completed=user.get('quest_completed', False))
 
-from flask import jsonify, request # Make sure request and jsonify are imported
+from flask import jsonify, request 
 
 @app.route('/api/server_win', methods=['POST'])
 def server_win():
@@ -288,16 +286,20 @@ def server_win():
     user = users_collection.find_one({'username': username})
     if not user: return "User not found", 404
 
+    games_played = user.get('games_played', 0) + 1
+    games_won = user.get('games_won', 0) + 1
+    users_collection.update_one({'username': username}, {'$set': {'games_played': games_played, 'games_won': games_won}})
+
     level = user.get('level', 1)
     new_xp = user.get('xp', 0) + 35 
     
-    # --- NEW: QUEST PROGRESS LOGIC ---
+  
     quest_progress = user.get('quest_progress', 0)
     quest_completed = user.get('quest_completed', False)
     quest_goal = user.get('quest_goal', 2)
     today_str = datetime.now().strftime('%Y-%m-%d')
     
-    # If the quest is for today and not finished, add progress!
+   
     if not quest_completed and user.get('quest_date') == today_str:
         quest_progress += 1
         if quest_progress >= quest_goal:
@@ -306,7 +308,7 @@ def server_win():
             
         users_collection.update_one({'username': username}, {'$set': {'quest_progress': quest_progress, 'quest_completed': quest_completed}})
 
-    # ... (Keep your existing Level Up while loop here exactly as it was) ...
+    
     while True:
         xp_needed = get_xp_needed(level)
         if new_xp >= xp_needed:
@@ -318,7 +320,7 @@ def server_win():
     users_collection.update_one({'username': username}, {'$set': {'xp': new_xp, 'level': level}})
     return "Win recorded", 200
 
-# --- ROUTE 2: For the browser to silently check for UI updates ---
+
 @app.route('/api/get_xp')
 def get_xp():
     if 'username' not in session: return jsonify({"error": "Not logged in"}), 401

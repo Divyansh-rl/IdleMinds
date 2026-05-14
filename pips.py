@@ -8,9 +8,7 @@ import random
 import requests
 import urllib
 
-# ---------------------------------------------------------
-# 1. Data Models & Game Logic
-# ---------------------------------------------------------
+
 class RuleType(Enum):
     EQUAL = "="
     NOT_EQUAL = "≠"
@@ -150,49 +148,46 @@ class PipsGame:
         current_sum = sum(values)
         if region.rule_type == RuleType.SUM:
             if is_full: return current_sum == region.target_value
-            else: return current_sum <= region.target_value # type: ignore
+            else: return current_sum <= region.target_value 
         elif region.rule_type == RuleType.GREATER_THAN:
-            if is_full: return current_sum > region.target_value # type: ignore
+            if is_full: return current_sum > region.target_value
             else: return True 
         elif region.rule_type == RuleType.LESS_THAN:
-            return current_sum < region.target_value # type: ignore
+            return current_sum < region.target_value
             
         return True
 
-# ---------------------------------------------------------
-# 2. UI Components (REDUCED DICE SIZE ONLY)
-# ---------------------------------------------------------
 
 def get_pip_face(val: int, color: str) -> ft.Control:
-    # DICE SCALED DOWN: Container size 40x40
+
     if val <= 0:
         return ft.Container(width=40, height=40) 
         
     def dot(left: float, top: float):
-        # DICE SCALED DOWN: Dots are 8x8
+       
         return ft.Container(width=8, height=8, border_radius=4, bgcolor=color, left=left, top=top)
         
     dots: list[ft.Control] = []
     
-    # Symmetrical dot coordinates for a 40x40 square
-    if val in [1, 3, 5]: dots.append(dot(16, 16)) # Center
+  
+    if val in [1, 3, 5]: dots.append(dot(16, 16)) 
     if val in [2, 3, 4, 5, 6]:
-        dots.append(dot(6, 6))   # Top Left
-        dots.append(dot(26, 26)) # Bottom Right
+        dots.append(dot(6, 6))   
+        dots.append(dot(26, 26)) 
     if val in [4, 5, 6]:
-        dots.append(dot(26, 6))  # Top Right
-        dots.append(dot(6, 26))  # Bottom Left
+        dots.append(dot(26, 6))  
+        dots.append(dot(6, 26))  
     if val == 6:
-        dots.append(dot(6, 16))  # Middle Left
-        dots.append(dot(26, 16)) # Middle Right
+        dots.append(dot(6, 16))  
+        dots.append(dot(26, 16)) 
 
     return ft.Container(width=40, height=40, content=ft.Stack(controls=dots, width=40, height=40))
 
 def create_domino_ui(domino: Domino) -> ft.Control:
-    face1 = get_pip_face(domino.val1, ft.Colors.BLACK) # type: ignore
-    face2 = get_pip_face(domino.val2, ft.Colors.BLACK) # type: ignore
+    face1 = get_pip_face(domino.val1, ft.Colors.BLACK) 
+    face2 = get_pip_face(domino.val2, ft.Colors.BLACK)
     
-    divider = ft.Container(width=2, height=40, bgcolor=ft.Colors.BLACK) # type: ignore
+    divider = ft.Container(width=2, height=40, bgcolor=ft.Colors.BLACK) 
     
     def make_horizontal():
         divider.width, divider.height = 2, 40
@@ -210,13 +205,13 @@ def create_domino_ui(domino: Domino) -> ft.Control:
             ft.Container(content=face2, alignment=ft.Alignment(0, 0), expand=1),
         ], spacing=0)
 
-    # DICE SCALED DOWN: Domino is 80x40
+   
     inner_box = ft.Container(
         width=80, height=40, 
-        border=ft.Border.all(2, ft.Colors.BLACK), # type: ignore
+        border=ft.Border.all(2, ft.Colors.BLACK), 
         border_radius=8, 
-        bgcolor=ft.Colors.WHITE, # type: ignore
-        shadow=ft.BoxShadow(spread_radius=0, blur_radius=3, color=ft.Colors.with_opacity(0.15, "black"), offset=ft.Offset(0, 2)), # type: ignore
+        bgcolor=ft.Colors.WHITE,
+        shadow=ft.BoxShadow(spread_radius=0, blur_radius=3, color=ft.Colors.with_opacity(0.15, "black"), offset=ft.Offset(0, 2)), 
         content=make_horizontal()
     )
 
@@ -234,9 +229,7 @@ def create_domino_ui(domino: Domino) -> ft.Control:
     inner_box.on_click = rotate_domino
     return ft.Draggable(group="domino", content=inner_box, data=str(domino.domino_id))
 
-# ---------------------------------------------------------
-# 3. Game State & Screen Navigation
-# ---------------------------------------------------------
+
 
 app_state = {
     "timer_running": False,
@@ -247,7 +240,7 @@ app_state = {
 def main(page: ft.Page):
     page.title = "NYT Pips Game"
     page.padding = 40
-    page.theme = ft.Theme(font_family="Helvetica") # type: ignore
+    page.theme = ft.Theme(font_family="Helvetica") 
 
     def show_popup(message: str, btn_text: str, color: str):
         def on_close(e):
@@ -264,11 +257,11 @@ def main(page: ft.Page):
             
         dialog = ft.AlertDialog(
             modal=True, 
-            title=ft.Text(message, size=20, color=color, weight=ft.FontWeight.W_900, text_align=ft.TextAlign.CENTER), # type: ignore
+            title=ft.Text(message, size=20, color=color, weight=ft.FontWeight.W_900, text_align=ft.TextAlign.CENTER), 
             actions=[
-                ft.ElevatedButton(btn_text, on_click=on_close, bgcolor=color, color=ft.Colors.WHITE, style=ft.ButtonStyle(padding=12)) # type: ignore
+                ft.ElevatedButton(btn_text, on_click=on_close, bgcolor=color, color=ft.Colors.WHITE, style=ft.ButtonStyle(padding=12)) 
             ],
-            actions_alignment=ft.MainAxisAlignment.CENTER, # type: ignore
+            actions_alignment=ft.MainAxisAlignment.CENTER, 
             shape=ft.RoundedRectangleBorder(radius=12) 
         )
         
@@ -302,22 +295,22 @@ def main(page: ft.Page):
         app_state["timer_running"] = False 
         page.controls.clear()
         page.overlay.clear() 
-        page.vertical_alignment = ft.MainAxisAlignment.CENTER # type: ignore
-        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER # type: ignore
+        page.vertical_alignment = ft.MainAxisAlignment.CENTER 
+        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER 
         
         page.bgcolor = "#DAA8D0" 
 
         menu_ui = ft.Column([
-            ft.Text("PIPS", size=54, weight=ft.FontWeight.W_900, color=ft.Colors.BLUE_GREY_900), # type: ignore
+            ft.Text("PIPS", size=54, weight=ft.FontWeight.W_900, color=ft.Colors.BLUE_GREY_900), 
             ft.Container(height=15),
             
-            ft.Text("Select Difficulty", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_900), # type: ignore
+            ft.Text("Select Difficulty", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_GREY_900), 
             ft.Container(height=10),
             
             ft.ElevatedButton("Easy", on_click=lambda _: show_game_screen("Easy"), bgcolor=ft.Colors.BLACK, color=ft.Colors.WHITE, width=200, height=50, style=ft.ButtonStyle(text_style=ft.TextStyle(size=18))), # type: ignore
             ft.ElevatedButton("Medium", on_click=lambda _: show_game_screen("Medium"), bgcolor=ft.Colors.BLACK, color=ft.Colors.WHITE, width=200, height=50, style=ft.ButtonStyle(text_style=ft.TextStyle(size=18))), # type: ignore
             ft.ElevatedButton("Hard", on_click=lambda _: show_game_screen("Hard"), bgcolor=ft.Colors.BLACK, color=ft.Colors.WHITE, width=200, height=50, style=ft.ButtonStyle(text_style=ft.TextStyle(size=18))), # type: ignore
-        ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER) # type: ignore
+        ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER)
 
         page.add(menu_ui)
         page.update()
@@ -326,8 +319,8 @@ def main(page: ft.Page):
         page.controls.clear()
         
         page.bgcolor = "#FFF0F5" 
-        page.vertical_alignment = ft.MainAxisAlignment.CENTER # type: ignore
-        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER # type: ignore
+        page.vertical_alignment = ft.MainAxisAlignment.CENTER 
+        page.horizontal_alignment = ft.CrossAxisAlignment.CENTER 
         
         app_state["time_left"] = 60
         app_state["timer_text"].value = "01:00"
@@ -352,9 +345,9 @@ def main(page: ft.Page):
         def on_domino_drop(e: ft.DragTargetEvent):
             target_zone = e.control 
             dragged_item = page.get_control(e.src_id) 
-            domino = game.dominoes[int(dragged_item.data)] # type: ignore
+            domino = game.dominoes[int(dragged_item.data)] 
             
-            r1, c1 = target_zone.data # type: ignore
+            r1, c1 = target_zone.data 
             if domino.orientation == Orientation.HORIZONTAL:
                 r2, c2 = r1, c1 + 1
             else:
@@ -381,7 +374,7 @@ def main(page: ft.Page):
                 game.board[r2, c2] = -1
                 
                 error_snack = ft.SnackBar(
-                    content=ft.Text("Invalid Placement! Breaks region math.", color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD, size=16), # type: ignore
+                    content=ft.Text("Invalid Placement! Breaks region math.", color=ft.Colors.WHITE, weight=ft.FontWeight.BOLD, size=16),
                     bgcolor="#D9534F",
                     duration=2000
                 )
@@ -395,14 +388,14 @@ def main(page: ft.Page):
             
             for (r, c), val in [((r1, c1), domino.val1), ((r2, c2), domino.val2)]:
                 cell_ui = ui_grid[(r, c)]
-                number_layer = cell_ui.content.controls[1] # type: ignore
-                # REVERT TO 50x50 CONTAINER WHEN DROPPED ON GRID SO IT STILL FILLS THE SQUARE PERFECTLY
+                number_layer = cell_ui.content.controls[1] 
+               
                 number_layer.content = ft.Container(
                     width=50, height=50, 
                     alignment=ft.Alignment(0, 0),
-                    content=get_pip_face(val, ft.Colors.BLACK) # type: ignore
+                    content=get_pip_face(val, ft.Colors.BLACK) 
                 ) 
-                cell_ui.bgcolor = ft.Colors.WHITE # type: ignore
+                cell_ui.bgcolor = ft.Colors.WHITE 
                 cell_ui.update()
             
             dragged_item.visible = False 
@@ -431,11 +424,11 @@ def main(page: ft.Page):
                 region = game.get_region_at(r, c)
                 
                 if region is None:
-                    # GRID REMAINS 50x50
-                    row_cells.append(ft.Container(width=50, height=50, bgcolor=ft.Colors.TRANSPARENT)) # type: ignore
+                  
+                    row_cells.append(ft.Container(width=50, height=50, bgcolor=ft.Colors.TRANSPARENT)) 
                     continue
                     
-                style = region_styles.get(region.region_id, {"bg": ft.Colors.WHITE, "border": ft.Colors.BLACK}) # type: ignore
+                style = region_styles.get(region.region_id, {"bg": ft.Colors.WHITE, "border": ft.Colors.BLACK}) 
                 bg_color = style["bg"]
                 border_color = style["border"]
                 rule_text = ""
@@ -456,23 +449,23 @@ def main(page: ft.Page):
                         border_radius=4,
                         rotate=0.785398, 
                         alignment=ft.Alignment(0, 0), 
-                        shadow=ft.BoxShadow(spread_radius=0, blur_radius=2, color=ft.Colors.with_opacity(0.3, "black"), offset=ft.Offset(1, 1)), # type: ignore
+                        shadow=ft.BoxShadow(spread_radius=0, blur_radius=2, color=ft.Colors.with_opacity(0.3, "black"), offset=ft.Offset(1, 1)), 
                         content=ft.Container(
                             rotate=-0.785398, 
                             alignment=ft.Alignment(0, 0), 
-                            content=ft.Text(rule_text, size=13, color=ft.Colors.WHITE, weight=ft.FontWeight.W_900, text_align=ft.TextAlign.CENTER) # type: ignore
+                            content=ft.Text(rule_text, size=13, color=ft.Colors.WHITE, weight=ft.FontWeight.W_900, text_align=ft.TextAlign.CENTER)
                         )
                     )
                 
                 cell_content = ft.Stack(
-                    clip_behavior=ft.ClipBehavior.NONE, # type: ignore
+                    clip_behavior=ft.ClipBehavior.NONE, 
                     controls=[
                         ft.Container(content=rule_display, alignment=ft.Alignment(-1.1, -1.1)),
                         ft.Container(content=ft.Container(), alignment=ft.Alignment(0, 0)) 
                     ]
                 )
 
-                # GRID REMAINS 50x50
+              
                 cell_container = ft.Container(
                     width=50, height=50, 
                     border=ft.Border.all(3, border_color), 
@@ -486,35 +479,35 @@ def main(page: ft.Page):
                 drop_zone = ft.DragTarget(group="domino", content=cell_container, data=(r, c), on_accept=on_domino_drop)
                 row_cells.append(drop_zone)
             
-            grid_rows.append(ft.Row(controls=row_cells, spacing=0, alignment=ft.MainAxisAlignment.CENTER)) # type: ignore
+            grid_rows.append(ft.Row(controls=row_cells, spacing=0, alignment=ft.MainAxisAlignment.CENTER)) 
             
-        board_ui = ft.Column(controls=grid_rows, spacing=0, alignment=ft.MainAxisAlignment.CENTER) # type: ignore
+        board_ui = ft.Column(controls=grid_rows, spacing=0, alignment=ft.MainAxisAlignment.CENTER) 
         
-        bank_row = ft.Row(wrap=True, alignment=ft.MainAxisAlignment.CENTER, spacing=16, run_spacing=16) # type: ignore
+        bank_row = ft.Row(wrap=True, alignment=ft.MainAxisAlignment.CENTER, spacing=16, run_spacing=16) 
         for d in game.dominoes:
-            bank_row.controls.append(create_domino_ui(d)) # type: ignore
+            bank_row.controls.append(create_domino_ui(d)) 
             
         bank_ui = ft.Container(
-            content=ft.Column([bank_row], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER), # type: ignore
+            content=ft.Column([bank_row], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER), 
             width=700, height=180, 
-            margin=ft.Margin.only(top=35), # type: ignore
+            margin=ft.Margin.only(top=35), 
             border=ft.Border.all(2, "#F8BBD0"), 
-            bgcolor=ft.Colors.WHITE, # type: ignore
+            bgcolor=ft.Colors.WHITE, 
             border_radius=12,
             padding=15,
             alignment=ft.Alignment(0, 0)
         )
 
         header = ft.Row([
-            ft.TextButton("← Back", on_click=show_home_screen, style=ft.ButtonStyle(color=ft.Colors.BLUE_GREY_900, text_style=ft.TextStyle(size=16))), # type: ignore
+            ft.TextButton("← Back", on_click=show_home_screen, style=ft.ButtonStyle(color=ft.Colors.BLUE_GREY_900, text_style=ft.TextStyle(size=16))), 
             app_state["timer_text"]
-        ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, width=700) # type: ignore
+        ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN, width=700)
 
         page.add(
             header,
             ft.Container(height=5),
-            ft.Text("Pips", size=42, weight=ft.FontWeight.W_900, color=ft.Colors.BLUE_GREY_900), # type: ignore
-            ft.Text("Place every domino in the right spot.", size=16, color=ft.Colors.BLUE_GREY_700), # type: ignore
+            ft.Text("Pips", size=42, weight=ft.FontWeight.W_900, color=ft.Colors.BLUE_GREY_900), 
+            ft.Text("Place every domino in the right spot.", size=16, color=ft.Colors.BLUE_GREY_700), 
             ft.Container(height=10),
             board_ui, 
             bank_ui
