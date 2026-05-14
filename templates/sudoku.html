@@ -192,6 +192,123 @@
             opacity: 0.7; 
             transition: opacity 0.2s ease;
         }
+        
+        .rules-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+            overflow-x: auto; 
+        overflow-y: hidden; 
+            scrollbar-width: none;
+        }
+
+        .rules-tabs::-webkit-scrollbar {
+            display: none; 
+        }
+        
+        .rule-tab {
+            background: none; border: none;
+            padding: 10px 15px; font-weight: bold; font-family: 'Alfa Slab One', serif;
+            color: var(--text-muted); cursor: pointer; 
+            border-bottom: 3px solid transparent; margin-bottom: -2px;
+            transition: all 0.2s ease; font-size: 14px; letter-spacing: 1px;
+        }
+        
+        .rule-tab:hover { color: var(--text-main); }
+
+        .rule-tab.active { 
+            color: var(--accent-color); 
+            border-bottom-color: var(--accent-color); 
+        }
+
+        
+        .rules-content { 
+            display: none; 
+            line-height: 1.6; color: var(--text-main); font-size: 15px;
+        }
+        
+        .rules-content.active { 
+            display: block; 
+            animation: fadeInTab 0.3s ease forwards; 
+        }
+        
+        .rules-content h3 { color: var(--text-main); margin-top: 0; font-size: 20px; }
+        .rules-content ul { padding-left: 20px; background: var(--card-bg); padding: 15px 15px 15px 35px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .rules-content li { margin-bottom: 10px; }
+        .rules-content li strong { color: var(--accent-color); }
+
+        @keyframes fadeInTab { 
+            from { opacity: 0; transform: translateY(5px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); 
+            backdrop-filter: blur(4px);
+            display: none; 
+            align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; transition: opacity 0.3s ease;
+        }
+
+        .modal-header { display: flex; align-items: center; gap: 20px; margin-bottom: 25px; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+            z-index: 999999; opacity: 0; transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .profile-modal {
+            background-color: var(--nav-bg, #ffffff); 
+            border: 1px solid var(--border-color, #e0e0e0);
+            border-radius: 20px; width: 450px; max-width: 90%;
+            padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute; top: 15px; right: 20px;
+            background: none; border: none; font-size: 24px;
+            color: var(--text-muted, #888); cursor: pointer; transition: color 0.2s;
+        }
+        .close-modal:hover { color: var(--accent-color, #ff6b6b); }
+
+        .rules-tabs {
+            display: flex; border-bottom: 2px solid var(--border-color, #e0e0e0);
+            margin-bottom: 20px; overflow-x: auto; overflow-y: hidden;
+            scrollbar-width: none;
+        }
+        .rules-tabs::-webkit-scrollbar { display: none; }
+        
+        .rule-tab {
+            background: none; border: none; padding: 10px 15px; font-weight: bold; 
+            font-family: 'Alfa Slab One', serif; color: var(--text-muted, #888); 
+            cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px;
+        }
+        .rule-tab.active { 
+            color: var(--accent-color, #ff6b6b); 
+            border-bottom-color: var(--accent-color, #ff6b6b); 
+        }
+
+        .rules-content { display: none; line-height: 1.6; color: var(--text-main, #333); font-size: 15px; }
+        .rules-content.active { display: block; animation: fadeInTab 0.3s ease forwards; }
+        .rules-content h3 { color: var(--text-main, #111); margin-top: 0; font-size: 20px; }
+        
+        .rules-content ul { 
+            padding-left: 20px; background: var(--card-bg, #f5f5f5); 
+            padding: 15px 15px 15px 35px; border-radius: 8px; 
+            border: 1px solid var(--border-color, #e0e0e0); 
+        }
+        .rules-content li { margin-bottom: 10px; }
+
+        @keyframes fadeInTab { 
+            from { opacity: 0; transform: translateY(5px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
     </style>
 </head>
 <body>
@@ -254,6 +371,11 @@
                         {% endif %}
                     </div>
                 </div>
+
+                <button class="dropdown-item" id="openRulesBtn">
+                    <img src="{{ url_for('static', filename='icons/icons8-book-80.png') }}" class="menu-icon" alt="Rules">
+                    Rule Book
+                </button>
                 <a href="/logout" class="dropdown-item"><img src="{{ url_for('static', filename='icons/icons8-logout-40.png') }}" class="menu-icon" alt="Logout"> Logout</a>
             </div>
         </div>
@@ -261,46 +383,194 @@
 
     <iframe src="http://127.0.0.1:8000/?user={{ username }}" width="100%" height="600px" style="border:none;"></iframe>
 
+    <div class="modal-overlay" id="ruleBookModal">
+        <div class="profile-modal" style="width: 600px; max-width: 95%;">
+            <button class="close-modal" id="closeRulesBtn">&times;</button>
+            
+            <div class="modal-header" style="margin-bottom: 15px;">
+                <h2 style="font-family: 'Alfa Slab One', serif; font-size: 24px; margin:0;">
+                    <img src="{{ url_for('static', filename='icons/icons8-book-80.png') }}" style="width: 24px; filter: invert(1); vertical-align: middle; margin-right: 10px;">
+                    How to Play
+                </h2>
+            </div>
+
+            <div class="rules-tabs">
+                <button class="rule-tab active" data-target="rules-sudoku">Sudoku</button>
+                <button class="rule-tab" data-target="rules-pips">Pips</button>
+                <button class="rule-tab" data-target="rules-zips">Zips</button>
+                <button class="rule-tab" data-target="rules-wordcraft">Wordcraft</button>
+                <button class="rule-tab" data-target="rules-connections">Connections</button>
+            </div>
+
+            <div class="rules-content active" id="rules-sudoku">
+                <h3>Sudoku</h3>
+                <p>The classic logic-based number puzzle. Your goal is to completely fill the 9x9 grid with digits.</p>
+                <ul>
+                    <li><strong>Rule 1:</strong> Every horizontal row must contain the numbers 1-9 exactly once.</li>
+                    <li><strong>Rule 2:</strong> Every vertical column must contain the numbers 1-9 exactly once.</li>
+                    <li><strong>Rule 3:</strong> Every bold 3x3 sub-grid must contain the numbers 1-9 exactly once.</li>
+                    <li><strong>Pro-Tip:</strong> Never guess! Always use logic to find where a number <em>must</em> go based on the numbers already on the board.</li>
+                </ul>
+            </div>
+
+            <div class="rules-content" id="rules-pips">
+                <h3>Pips</h3>
+                <p>A tricky game of dice and logic. Your goal is to place pairs of dice onto the board to satisfy all given conditions.</p>
+                <ul>
+                    <li><strong>Rule 1:</strong> Analyze the specific number or mathematical conditions listed on the board's blocks.</li>
+                    <li><strong>Rule 2:</strong> Drag and drop your available pairs of dice into the blocks.</li>
+                    <li><strong>Rule 3:</strong> The pips (dots) on the dice must satisfy the conditions of the block they are placed in.</li>
+                    <li><strong>Rule 4:</strong> You win when every pair of dice is placed and all board conditions are simultaneously met!</li>
+                </ul>
+            </div>
+
+            <div class="rules-content" id="rules-zips">
+                <h3>Zips</h3>
+                <p>A spatial sequencing puzzle. Connect the numbers in order while leaving no trace behind.</p>
+                <ul>
+                    <li><strong>Rule 1:</strong> Start at the number <strong>1</strong> and trace a continuous path to the number <strong>5</strong> in sequential order (1 → 2 → 3 → 4 → 5).</li>
+                    <li><strong>Rule 2:</strong> Your path must pass through <strong>every single empty block</strong> on the screen.</li>
+                    <li><strong>Rule 3:</strong> The path cannot cross itself, overlap, or move diagonally.</li>
+                    <li><strong>Pro-Tip:</strong> Plan ahead! If you reach 5 but there are still empty blocks left on the grid, you must backtrack and find a longer route.</li>
+                </ul>
+            </div>
+
+            <div class="rules-content" id="rules-wordcraft">
+                <h3>Wordcraft</h3>
+                <p>Test your vocabulary. Guess the hidden 5-letter word within your limited attempts.</p>
+                <ul>
+                    <li><strong>Rule 1:</strong> Type any valid 5-letter word and submit your guess.</li>
+                    <li><strong style="color: #4CAF50;">Green Tiles:</strong> The letter is in the word and in the <em>exact correct spot</em>.</li>
+                    <li><strong style="color: #FFC107;">Yellow Tiles:</strong> The letter is in the word, but in the <em>wrong spot</em>. Move it somewhere else!</li>
+                    <li><strong style="color: #9E9E9E;">Gray Tiles:</strong> The letter is not in the hidden word at all.</li>
+                </ul>
+            </div>
+
+            <div class="rules-content" id="rules-connections">
+                <h3>Connections</h3>
+                <p>A game of lateral thinking. Group a grid of 16 random words into 4 distinct categories.</p>
+                <ul>
+                    <li><strong>Rule 1:</strong> Look at the 16 cards and find <strong>4 words</strong> that share a common theme (e.g., "Types of Fish" or "Words that start with 'C'").</li>
+                    <li><strong>Rule 2:</strong> Select those 4 cards and submit to see if they are a match.</li>
+                    <li><strong>Rule 3:</strong> Successfully find all 4 groups of 4 to clear the board and win.</li>
+                    <li><strong>Pro-Tip:</strong> Watch out for red herrings! Some words might look like they belong to multiple categories just to trick you.</li>
+                </ul>
+            </div>
+            
+        </div>
+    </div>
 
     <script>
-        const menuBtn = document.getElementById('menuBtn');
-        const sidebar = document.getElementById('sidebar');
-        const closeSidebar = document.getElementById('closeSidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        document.addEventListener("DOMContentLoaded", () => {
+            console.log("ALL SCRIPTS INITIALIZED!"); 
 
-        function toggleSidebar() {
-            sidebar.classList.toggle('active');
-            sidebarOverlay.classList.toggle('active');
-        }
+            const avatarBtn = document.getElementById('avatarBtn');
+            const userDropdown = document.getElementById('userDropdown'); 
 
-        menuBtn.addEventListener('click', toggleSidebar);
-        closeSidebar.addEventListener('click', toggleSidebar);
-        sidebarOverlay.addEventListener('click', toggleSidebar);
+            if (avatarBtn && userDropdown) {
+                avatarBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    userDropdown.classList.toggle('active'); 
+                });
 
-        const avatarBtn = document.getElementById('avatarBtn');
-        const userDropdown = document.getElementById('userDropdown');
-        avatarBtn.addEventListener('click', (e) => { e.stopPropagation(); userDropdown.classList.toggle('active'); });
-        document.addEventListener('click', (e) => { if (!userDropdown.contains(e.target)) { userDropdown.classList.remove('active'); } });
-        
-        let currentXp = parseInt("{{ xp }}"); 
+                document.addEventListener('click', (e) => {
+                    if (!userDropdown.contains(e.target)) {
+                        userDropdown.classList.remove('active'); 
+                    }
+                });
+            }
 
-        setInterval(() => {
-            fetch('/api/get_xp')
-            .then(response => response.json())
-            .then(data => {
-                if (data.xp !== currentXp || data.level > parseInt(document.querySelector('.xp-level-badge').innerText)) {
+            const profileModal = document.getElementById('profileModal');
+            const closeProfileBtn = document.getElementById('closeProfileBtn');
+
+            document.body.addEventListener('click', (e) => {
+                if (e.target.closest('#openProfileBtn')) {
+                    e.preventDefault();
+                    if (userDropdown) userDropdown.classList.remove('active'); 
                     
-                    console.log("Win detected! Updating UI...");
-                    
-                    document.querySelector('.xp-level-badge').innerText = data.level;
-                    document.querySelector('.xp-text').innerText = data.xp + ' / ' + data.next_xp;
-                    document.querySelector('.xp-bar-fill').style.width = data.progress + '%';
-                    
-                    currentXp = data.xp; 
+                    if (profileModal) {
+                        profileModal.classList.add('active');
+                        profileModal.style.display = 'flex';
+                        profileModal.style.opacity = '1';
+                        profileModal.style.zIndex = '999999';
+                    }
                 }
-            })
-            .catch(error => console.error("Polling error:", error));
-        }, 2000); 
+            });
+
+            if (closeProfileBtn && profileModal) {
+                closeProfileBtn.addEventListener('click', () => {
+                    profileModal.classList.remove('active');
+                    profileModal.style.display = 'none';
+                });
+
+                profileModal.addEventListener('click', (event) => {
+                    if (event.target === profileModal) {
+                        profileModal.classList.remove('active');
+                        profileModal.style.display = 'none';
+                    }
+                });
+            }
+
+            const ruleBookModal = document.getElementById('ruleBookModal');
+            const closeRulesBtn = document.getElementById('closeRulesBtn');
+            const ruleTabs = document.querySelectorAll('.rule-tab');
+            const ruleContents = document.querySelectorAll('.rules-content');
+
+            document.body.addEventListener('click', (e) => {
+                if (e.target.closest('#openRulesBtn')) {
+                    e.preventDefault();
+                    
+                    if (userDropdown) userDropdown.classList.remove('active');
+
+                    if (ruleBookModal) {
+                        console.log("BRUTE FORCING RULE BOOK OPEN...");
+                        
+                        ruleBookModal.classList.add('active');
+                        ruleBookModal.style.display = 'flex';
+                        ruleBookModal.style.opacity = '1';
+                        ruleBookModal.style.zIndex = '999999'; 
+
+                        const currentUrl = window.location.pathname.toLowerCase();
+                        let tabToClick = 'rules-sudoku'; 
+                        
+                        if (currentUrl.includes('pips')) tabToClick = 'rules-pips';
+                        if (currentUrl.includes('zips')) tabToClick = 'rules-zips';
+                        if (currentUrl.includes('wordcraft')) tabToClick = 'rules-wordcraft';
+                        if (currentUrl.includes('connections')) tabToClick = 'rules-connections';
+                        
+                        const targetTab = document.querySelector(`.rule-tab[data-target="${tabToClick}"]`);
+                        if (targetTab) targetTab.click(); 
+                    } else {
+                        alert("ERROR: The JavaScript cannot find the ruleBookModal HTML on this page!");
+                    }
+                }
+            });
+
+            ruleTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    ruleTabs.forEach(t => t.classList.remove('active'));
+                    ruleContents.forEach(c => c.classList.remove('active'));
+
+                    tab.classList.add('active');
+                    const targetContent = document.getElementById(tab.dataset.target);
+                    if (targetContent) targetContent.classList.add('active');
+                });
+            });
+
+            if (closeRulesBtn && ruleBookModal) {
+                closeRulesBtn.addEventListener('click', () => {
+                    ruleBookModal.classList.remove('active');
+                    ruleBookModal.style.display = 'none'; 
+                });
+                
+                ruleBookModal.addEventListener('click', (e) => {
+                    if (e.target === ruleBookModal) {
+                        ruleBookModal.classList.remove('active');
+                        ruleBookModal.style.display = 'none'; 
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
